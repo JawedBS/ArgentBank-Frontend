@@ -5,6 +5,7 @@ function Header(){
     <header>
       <h1><img className="header-image" src={argentBankLogo}/></h1>
       <nav className="navbar">
+            <a href="/signin">Sign In</a>
       </nav>
     </header>
   );
