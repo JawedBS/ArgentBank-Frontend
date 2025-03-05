@@ -1,22 +1,25 @@
-import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import SignIn from './pages/SignIn';
 import UserProfile from './pages/UserProfile';
 import Header from './components/Header';
+import Footer from './components/footer';
+ 
 
 function App() {
   return (
-    <Router>
-      <Header />
+    <>
+      <Header/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/profile" element={<UserProfile />} />
       </Routes>
-    </Router>
+      <Footer/>
+    </>
   );
 }
 
 export default App;
+
 
