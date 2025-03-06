@@ -3,7 +3,7 @@ import "../styles/main.css";
 import iconChat from "../assets/img/icon-chat.png";
 import iconMoney from "../assets/img/icon-money.png";
 import iconSecurity from "../assets/img/icon-security.png";
-import bankTree from "../assets/img/bank-tree.jpeg";
+
 
 function Home() {
     return (
