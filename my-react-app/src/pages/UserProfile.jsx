@@ -7,6 +7,8 @@ function UserProfile() {
         <h1>Welcome Back</h1>
         <button>Edit name</button>
         <BalanceAccount/>
+        <BalanceAccount/>
+        <BalanceAccount/>
       </main>
     );
   }
