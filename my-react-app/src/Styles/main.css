@@ -5,22 +5,28 @@ html {
   text-align: center;
   color: #2c3e50;
 }
+#root {
+  width: 100%;
+  text-align: center;
+}
 
 body {
   margin: 0;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #fff;
 }
 
 .main {
   flex: 1;
+  background-color: #fff;
 }
 header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  width: 100%;
+  background-color: #fff;
 }
 .banner {
   position: relative;
@@ -50,6 +56,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   padding: 5px 20px;
 }
 
@@ -217,12 +224,46 @@ header {
   padding: 5px;
   font-size: 1.2rem;
 }
+.account-title {
+  color: black;
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+  font-weight: normal;
+}
+.account-balance {
+  color: black;
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+.account-description {
+  color: black;
+  margin: 0;
+}
+
+.sign-in-title{
+  color: black;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+.sign-in-username{
+  color: black;
+}
+.sign-in-password{
+  color: black;
+}
+.sign-in-remember{
+  color: black;
+}
 
 .footer {
   display: flex;
   justify-content: center;
   border-top: 2px solid #ccc;
   padding: 2rem 0 1.5rem;
+  background-color: #fff;
 }
 
 .footer-text {

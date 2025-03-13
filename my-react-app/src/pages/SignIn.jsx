@@ -1,22 +1,27 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 
 function SignIn() {
     return (
-      <main className="main">
-        <div>
-          <h1>Sign In</h1>
-          <form>
+      <main className="main-bg-dark">
+        <div className='sign-in-content'>
+          <h1 className='sign-in-title'>Sign In</h1>
+          <form >
             <div>
-            <label for="username">Username</label>
+            <label className='sign-in-username' for="username">Username</label>
             <input type="text" id="username" name="username" />
             </div>
             <div>
-            <label for="password">Password</label>
+            <label className='sign-in-password'for="password">Password</label>
             <input type="password" id="password" name="password" />
             </div>
-            <div></div>
-            <input type="checkbox" id='remember-me' /> <label for='remember-me'>Remember me</label>
-            <button>Sign In</button>
+            <div>
+            <input type="checkbox" id='remember-me' /> 
+            <label className='sign-in-remember' for='remember-me'>Remember me</label>
+            </div>
+            <Link to="/profile">
+            <button className="sign-in-button">Sign In</button>
+            </Link>
           </form>
         </div>
       </main>
