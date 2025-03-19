@@ -10,6 +10,7 @@ export const loginUser = createAsyncThunk(
   async ({ email, password }, thunkAPI) => {
     try {
       const response = await axios.post(`${API_URL}/login`, { email, password });
+      console.log(" Réponse API :", response.data); // Log de la réponse API
       localStorage.setItem("token", response.data.token);
       return response.data;
     } catch (error) {
@@ -57,7 +58,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.token = action.payload.token;
+        state.token = action.payload.body.token;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;

@@ -1,31 +1,80 @@
-import React from 'react';
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../redux/authSlice";
+import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 
 function SignIn() {
-    return (
-      <main className="main-bg-dark">
-        <div className='sign-in-content'>
-          <h1 className='sign-in-title'>Sign In</h1>
-          <form >
-            <div>
-            <label className='sign-in-username' for="username">Username</label>
-            <input type="text" id="username" name="username" />
-            </div>
-            <div>
-            <label className='sign-in-password'for="password">Password</label>
-            <input type="password" id="password" name="password" />
-            </div>
-            <div>
-            <input type="checkbox" id='remember-me' /> 
-            <label className='sign-in-remember' for='remember-me'>Remember me</label>
-            </div>
-            <Link to="/profile">
-            <button className="sign-in-button">Sign In</button>
-            </Link>
-          </form>
-        </div>
-      </main>
-    );
-  }
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.auth);
+  
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  export default SignIn;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    console.log("Tentative de connexion avec :", { email, password });
+  
+    try {
+      const result = await dispatch(loginUser({ email, password }));
+  
+      console.log(" Résultat de l'authentification :", result);
+  
+      if (result.meta.requestStatus === "fulfilled" && result.payload?.body?.token) {
+        console.log(" Redirection vers /profile avec token :", result.payload.body.token);
+        navigate("/profile"); // Rediriger après connexion réussie
+      } else {
+        console.error(" Erreur : pas de token reçu !");
+      }
+    } catch (error) {
+      console.error(" Erreur dans handleSubmit :", error);
+    }
+  };
+  
+
+  return (
+    <main className="main bg-dark">
+      <div className="sign-in-content">
+        <FontAwesomeIcon icon={faCircleUser} size="2x" color="black" />
+        <h1 className="sign-in-title">Sign In</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="input-wrapper">
+            <label htmlFor="email">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-wrapper">
+            <label htmlFor="password">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-remember">
+            <input type="checkbox" id="remember-me" /> 
+            <label htmlFor="remember-me">Remember me</label>
+          </div>
+          <button type="submit" className="sign-in-button" disabled={loading}>
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
+          {error && <p >{error.message || "Login failed"}</p>}
+        </form>
+      </div>
+    </main>
+  );
+}
+
+export default SignIn;
