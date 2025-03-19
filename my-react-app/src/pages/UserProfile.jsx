@@ -10,6 +10,7 @@ function UserProfile() {
   const { user, token, loading, error } = useSelector((state) => state.auth);
 
   useEffect(() => {
+    console.log(" Utilisateur dans Redux :", user);
     if (!token) {
       navigate("/signin"); // Redirige si non connecté
     } else {
@@ -22,8 +23,8 @@ function UserProfile() {
 
   return (
     <main className="main bg-dark">
-      <h1>Welcome Back, {user ? user.firstName : "User"}!</h1>
-      <p>Your username: {user ? user.userName : "Unknown"}</p>
+      <h1>Welcome Back, </h1>
+      
       <button className="edit-button">Edit name</button>
       <section className="accounts">
         <BalanceAccount

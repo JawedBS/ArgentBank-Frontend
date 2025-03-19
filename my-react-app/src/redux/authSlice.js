@@ -25,15 +25,26 @@ export const fetchUserProfile = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = localStorage.getItem("token");
+      
+      if (!token) {
+        throw new Error(" Aucun token trouvé, utilisateur non connecté !");
+      }
+
+      console.log(" Envoi de la requête avec le token :", token); // Vérification
+
       const response = await axios.get(`${API_URL}/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      console.log(" Réponse du backend :", response.data);
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      console.error(" Erreur lors de la récupération du profil :", error.response?.data || error.message);
+      return thunkAPI.rejectWithValue(error.response?.data);
     }
   }
 );
+
 
 // Slice Redux pour gérer l'état de l'authentification
 const authSlice = createSlice({
@@ -59,12 +70,14 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.token = action.payload.body.token;
+        localStorage.setItem("token", action.payload.body.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        console.log("Données utilisateur stockées dans Redux :", action.payload.body);
         state.user = action.payload;
       });
   },
