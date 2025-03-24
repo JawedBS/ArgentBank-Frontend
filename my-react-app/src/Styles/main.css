@@ -80,6 +80,9 @@ h1 {
   text-decoration: none;
   margin-right: 0.5rem;
 }
+.main-nav-button{
+  background-color: #fff;
+}
 
 .main-nav-item:hover {
   text-decoration: underline;

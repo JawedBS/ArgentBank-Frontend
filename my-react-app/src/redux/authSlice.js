@@ -78,7 +78,7 @@ const authSlice = createSlice({
       })
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
         console.log("Données utilisateur stockées dans Redux :", action.payload.body);
-        state.user = action.payload;
+        state.user = action.payload.body;
       });
   },
 });

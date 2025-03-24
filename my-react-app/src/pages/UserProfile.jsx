@@ -7,23 +7,28 @@ import BalanceAccount from "../components/BalanceAccount";
 function UserProfile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
+  // Récupération des données utilisateur depuis Redux
   const { user, token, loading, error } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    console.log(" Utilisateur dans Redux :", user);
+    console.log(" Vérification du token :", token);
+    console.log(" Utilisateur avant mise à jour :", user);
+
     if (!token) {
-      navigate("/signin"); // Redirige si non connecté
-    } else {
-      dispatch(fetchUserProfile()); // Charge les infos de l'utilisateur
+      navigate("/signin"); // Redirige vers la page de connexion si non connecté
+    } else if (!user) {
+      console.log(" Dispatch de fetchUserProfile()");
+      dispatch(fetchUserProfile()); // Récupère les données utilisateur
     }
-  }, [token, dispatch, navigate]);
+  }, [token, user, dispatch, navigate]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   return (
     <main className="main bg-dark">
-      <h1>Welcome Back, </h1>
+      <h1>Welcome Back,<br /> {user ? user.firstName : "User"} {user ? user.lastName : "User"}!</h1>
       
       <button className="edit-button">Edit name</button>
       <section className="accounts">
