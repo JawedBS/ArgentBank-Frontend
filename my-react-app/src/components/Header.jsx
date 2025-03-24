@@ -24,16 +24,15 @@ function Header() {
         <Link className="main-nav-logo" to="/">
           <img src={argentBankLogo} alt="Argent Bank Logo" />
         </Link>
-        <div>
+        <div className="main-nav-items">
           {token && user ? (
             // Si l'utilisateur est connecté, afficher son nom et "Sign Out"
             <>
-            
               <FontAwesomeIcon icon={faCircleUser} size="1x" color="black" />
-              <span className="main-nav-item">{user.firstName}</span>
+              <span className="main-nav-item">{user.userName}</span>
               <button className="main-nav-button" onClick={handleLogout}>
                 <FontAwesomeIcon icon={faSignOutAlt} size="1x" color="black" />
-                <p>Sign Out</p>
+                <p className="main-nav-item">Sign Out</p>
               </button>
             </>
           ) : (

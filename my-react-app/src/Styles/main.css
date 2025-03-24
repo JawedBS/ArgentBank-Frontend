@@ -76,12 +76,21 @@ h1 {
   color: #42b983;
 }
 
+.main-nav-items{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
 .main-nav-item {
   text-decoration: none;
   margin-right: 0.5rem;
+  color: black;
 }
 .main-nav-button{
   background-color: #fff;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .main-nav-item:hover {

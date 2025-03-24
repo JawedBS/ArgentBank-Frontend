@@ -1,25 +1,39 @@
-function EditUserInfo(){
+import React, { useState } from "react";
+
+
+
+function EditUserInfo({ currentUser, onSave, onCancel }) {
+    const [userName, setUserName] = useState(currentUser.userName);
+  
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      onSave(userName); // Appel vers Redux (à venir)
+    };
     return (
-        <div>
+        <div className="edit-form-container"> 
             <h1>Edit User Info</h1>
-            <form>
+            <form onSubmit={handleSubmit}>
             <div>
-            <label for="username">User name:</label>
-            <input type="text" id="username" name="username" />
+            <label htmlFor="username">User name:</label>
+            <input type="text" id="username" name="username" value={userName}
+            onChange={(e) => setUserName(e.target.value)} />
             </div>
             <div>
-            <label for="firstname">First name:</label>
-            <input type="text" id="firstname" name="firstname" />
+            <label htmlFor="firstname">First name:</label>
+            <input type="text" id="firstname" name="firstname"  value={currentUser.firstName}
+            disabled />
             </div>
             <div>
-            <label for="lastname">Last name:</label>
-            <input type="text" id="lastname" name="lastname" />
+            <label htmlFor="lastname">Last name:</label>
+            <input type="text" id="lastname" name="lastname" value={currentUser.lastName} 
+            disabled/>
             </div>
+            <div className="edit-form-buttons">
+          <button type="submit" className="save-btn">Save</button>
+          <button type="button" className="cancel-btn" onClick={onCancel}>Cancel</button>
+        </div>
             </form>
-            <div>
-            <button>Save</button>
-            <button>Cancel</button>
-            </div>
         </div>
     );
   };

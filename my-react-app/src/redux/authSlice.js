@@ -45,6 +45,30 @@ export const fetchUserProfile = createAsyncThunk(
   }
 );
 
+// Action pour mettre à jour le userName
+export const updateUserProfile = createAsyncThunk(
+  "auth/updateUserProfile",
+  async (userName, thunkAPI) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `${API_URL}/profile`,
+        { userName },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      console.log(" Pseudo mis à jour :", response.data.body.userName);
+      return response.data;
+    } catch (error) {
+      console.error(" Erreur lors de la mise à jour :", error.response?.data || error.message);
+      return thunkAPI.rejectWithValue(error.response?.data || "Erreur inconnue");
+    }
+  }
+);
+
+
 
 // Slice Redux pour gérer l'état de l'authentification
 const authSlice = createSlice({
@@ -79,6 +103,12 @@ const authSlice = createSlice({
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
         console.log("Données utilisateur stockées dans Redux :", action.payload.body);
         state.user = action.payload.body;
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.user.userName = action.payload.body.userName;
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        state.error = action.payload;
       });
   },
 });

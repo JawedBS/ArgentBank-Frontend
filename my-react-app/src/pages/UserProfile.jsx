@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserProfile } from "../redux/authSlice";
+import { fetchUserProfile, updateUserProfile } from "../redux/authSlice";
 import { useNavigate } from "react-router-dom";
 import BalanceAccount from "../components/BalanceAccount";
+import EditUserInfo from "../components/EditUserInfo"; 
 
 function UserProfile() {
   const dispatch = useDispatch();
@@ -10,6 +11,7 @@ function UserProfile() {
   
   // Récupération des données utilisateur depuis Redux
   const { user, token, loading, error } = useSelector((state) => state.auth);
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     console.log(" Vérification du token :", token);
@@ -23,14 +25,34 @@ function UserProfile() {
     }
   }, [token, user, dispatch, navigate]);
 
+  const handleSave = (newUserName) => {
+    dispatch(updateUserProfile(newUserName)).then(() => {
+      dispatch(fetchUserProfile()); // Rafraîchir les données
+      setEditMode(false);
+    });
+  };
+
+  const handleCancel = () => setEditMode(false);
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   return (
     <main className="main bg-dark">
-      <h1>Welcome Back,<br /> {user ? user.firstName : "User"} {user ? user.lastName : "User"}!</h1>
-      
-      <button className="edit-button">Edit name</button>
+       {!editMode ? (
+        <>
+          <h1> Welcome Back,<br />{user?.firstName} {user?.lastName} </h1>
+          <button className="edit-button" onClick={() => setEditMode(true)}>
+            Edit name
+          </button>
+        </>
+          ) : (
+            <EditUserInfo
+              currentUser={user}
+              onSave={handleSave}
+              onCancel={handleCancel}
+            />
+          )}
       <section className="accounts">
         <BalanceAccount
           title="Argent Bank Checking (x8349)"
