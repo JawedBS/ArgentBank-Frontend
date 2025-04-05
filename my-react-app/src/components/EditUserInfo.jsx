@@ -8,7 +8,7 @@ function EditUserInfo({ currentUser, onSave, onCancel }) {
 
     const handleSubmit = (e) => {
       e.preventDefault();
-      onSave(userName); // Appel vers Redux (à venir)
+      onSave(userName); // Appel vers Redux 
     };
     return (
         <div className="edit-form-container"> 
