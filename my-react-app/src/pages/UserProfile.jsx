@@ -3,56 +3,68 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile, updateUserProfile } from "../redux/authSlice";
 import { useNavigate } from "react-router-dom";
 import BalanceAccount from "../components/BalanceAccount";
-import EditUserInfo from "../components/EditUserInfo"; 
+import EditUserInfo from "../components/EditUserInfo";
 
 function UserProfile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
-  // Récupération des données utilisateur depuis Redux
+
+  // On récupère l’état global du store : token, infos utilisateur, statut de chargement ou d’erreur
   const { user, token, loading, error } = useSelector((state) => state.auth);
+
+  // Mode édition du pseudo (permet de basculer entre affichage et formulaire)
   const [editMode, setEditMode] = useState(false);
 
+  // Dès le chargement du composant
   useEffect(() => {
-    console.log(" Vérification du token :", token);
-    console.log(" Utilisateur avant mise à jour :", user);
-
+    // Si aucun token, l’utilisateur est redirigé vers la page de connexion
     if (!token) {
-      navigate("/signin"); // Redirige vers la page de connexion si non connecté
-    } else if (!user) {
-      console.log(" Dispatch de fetchUserProfile()");
-      dispatch(fetchUserProfile()); // Récupère les données utilisateur
+      navigate("/signin");
+    }
+
+    // Si un token est présent mais aucune info utilisateur dans le store, on les récupère depuis l’API
+    if (token && !user) {
+      dispatch(fetchUserProfile());
     }
   }, [token, user, dispatch, navigate]);
 
+  // Fonction appelée lors de la validation du nouveau pseudo
   const handleSave = (newUserName) => {
     dispatch(updateUserProfile(newUserName)).then(() => {
-      dispatch(fetchUserProfile()); // Rafraîchir les données
+      // Une fois la mise à jour faite, on quitte le mode édition
       setEditMode(false);
     });
   };
 
+  // Annulation de la modification
   const handleCancel = () => setEditMode(false);
 
+  // Affichage en fonction du statut de chargement ou d’erreur
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   return (
     <main className="main bg-dark">
-       {!editMode ? (
+      {!editMode ? (
         <>
-          <h1> Welcome Back,<br />{user?.firstName} {user?.lastName} </h1>
+          {/* Affichage des infos utilisateur si on n’est pas en mode édition */}
+          <h1>
+            Welcome Back,<br />{user?.firstName} {user?.lastName}
+          </h1>
           <button className="edit-button" onClick={() => setEditMode(true)}>
             Edit name
           </button>
         </>
-          ) : (
-            <EditUserInfo
-              currentUser={user}
-              onSave={handleSave}
-              onCancel={handleCancel}
-            />
-          )}
+      ) : (
+        // Si en mode édition, affichage du formulaire de modification
+        <EditUserInfo
+          currentUser={user}
+          onSave={handleSave}
+          onCancel={handleCancel}
+        />
+      )}
+
+      {/* Affichage des comptes utilisateurs (statique dans cet exemple) */}
       <section className="accounts">
         <BalanceAccount
           title="Argent Bank Checking (x8349)"
