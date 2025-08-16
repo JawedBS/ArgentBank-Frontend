@@ -1,98 +1,96 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// URL de l'API du backend
 const API_URL = "http://localhost:3001/api/v1/user";
 
-// Action pour connecter un utilisateur et récupérer son profil
+
+// Login + fetch profile
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password }, thunkAPI) => {
     try {
-      // Authentification de l'utilisateur
-      const response = await axios.post(`${API_URL}/login`, { email, password });
-      const token = response.data.body.token;
+      const { data } = await axios.post(`${API_URL}/login`, { email, password });
+      const token = data?.body?.token ?? data?.token;
+      if (!token) throw new Error("Token manquant");
 
-      if (!token) throw new Error("Token non fourni par l'API");
-
-      // Stockage du token en local
+      // persist token
       localStorage.setItem("token", token);
 
-      // Récupération du profil utilisateur après connexion
-      const profileResponse = await axios.get(`${API_URL}/profile`, {
+      // fetch profile right after login
+      const prof = await axios.get(`${API_URL}/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      return {
-        token,
-        user: profileResponse.data.body,
-      };
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+      return { token, user: prof.data.body };
+    } catch (e) {
+      // Message générique, on ne remonte pas "password is invalid" etc.
+      return thunkAPI.rejectWithValue("AUTH_FAILED");
     }
   }
 );
 
-// Action pour récupérer les informations utilisateur (utilisée au rechargement)
+// Reload: récupérer le profil avec le token existant
 export const fetchUserProfile = createAsyncThunk(
   "auth/fetchUserProfile",
   async (_, thunkAPI) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token manquant");
-
-      const response = await axios.get(`${API_URL}/profile`, {
+      const { data } = await axios.get(`${API_URL}/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      return response.data.body;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+      return data.body;
+    } catch (e) {
+      return thunkAPI.rejectWithValue("PROFILE_FAILED");
     }
   }
 );
 
-// Action pour mettre à jour le pseudo de l'utilisateur
+// Mettre à jour le pseudo (username)
 export const updateUserProfile = createAsyncThunk(
   "auth/updateUserProfile",
   async (userName, thunkAPI) => {
     try {
       const token = localStorage.getItem("token");
-
-      const response = await axios.put(
+      const { data } = await axios.put(
         `${API_URL}/profile`,
         { userName },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      return response.data.body;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || "Erreur inconnue");
+      // data.body = objet user à jour
+      return data.body;
+    } catch (e) {
+      return thunkAPI.rejectWithValue("UPDATE_FAILED");
     }
   }
 );
 
-// Création du slice Redux d'authentification
+
+
+const initialState = {
+  user: null,
+  token: localStorage.getItem("token") || null,
+  loading: false,
+  error: null, // sera "AUTH_FAILED" côté UI si login échoue
+};
+
 const authSlice = createSlice({
   name: "auth",
-  initialState: {
-    user: null,
-    token: localStorage.getItem("token") || null,
-    loading: false,
-    error: null,
-  },
+  initialState,
   reducers: {
+    clearError: (state) => {
+      state.error = null;
+    },
     logout: (state) => {
       state.user = null;
       state.token = null;
+      state.error = null;
       localStorage.removeItem("token");
     },
   },
   extraReducers: (builder) => {
     builder
-      // Connexion
+      // LOGIN
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -104,10 +102,10 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || "AUTH_FAILED";
       })
 
-      // Récupération du profil utilisateur
+      // FETCH PROFILE
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
         state.user = action.payload;
       })
@@ -115,11 +113,10 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Mise à jour du pseudo
+      // UPDATE USERNAME
       .addCase(updateUserProfile.fulfilled, (state, action) => {
-        if (state.user) {
-          state.user.userName = action.userName;
-        }
+        // merge pour mise à jour instantanée
+        if (state.user) state.user = { ...state.user, ...action.payload };
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.error = action.payload;
@@ -127,7 +124,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, clearError } = authSlice.actions;
 export default authSlice.reducer;
-
-

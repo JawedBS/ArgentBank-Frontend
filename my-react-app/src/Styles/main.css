@@ -318,8 +318,7 @@ h1 {
   flex-direction: column;
   padding: 1.5rem;
   box-sizing: border-box;
-  text-align: left;
-  margin-top: 2rem;
+  text-align: left;;
 }
 
 .account-amount {

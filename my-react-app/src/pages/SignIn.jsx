@@ -79,7 +79,8 @@ function SignIn() {
           </button>
 
           {/* Message d'erreur si l’authentification échoue */}
-          {error && <p className="error-message">{error.message || "Login failed"}</p>}
+          {error === "AUTH_FAILED" && (
+  <p className="error-message">L’authentification a échoué. Veuillez vérifier vos informations.</p>)}
         </form>
       </div>
     </main>

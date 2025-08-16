@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import "../styles/editUserInfo.css";
 
 
 function EditUserInfo({ currentUser, onSave, onCancel }) {
@@ -14,17 +14,17 @@ function EditUserInfo({ currentUser, onSave, onCancel }) {
         <div className="edit-form-container"> 
             <h1>Edit User Info</h1>
             <form onSubmit={handleSubmit}>
-            <div>
+            <div className="container-user">
             <label htmlFor="username">User name:</label>
             <input type="text" id="username" name="username" value={userName}
             onChange={(e) => setUserName(e.target.value)} />
             </div>
-            <div>
+            <div className="container-user">
             <label htmlFor="firstname">First name:</label>
             <input type="text" id="firstname" name="firstname"  value={currentUser.firstName}
             disabled />
             </div>
-            <div>
+            <div className="container-user">
             <label htmlFor="lastname">Last name:</label>
             <input type="text" id="lastname" name="lastname" value={currentUser.lastName} 
             disabled/>
