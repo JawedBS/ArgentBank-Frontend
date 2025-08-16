@@ -17,7 +17,7 @@ function EditUserInfo({ currentUser, onSave, onCancel }) {
             <div className="container-user">
             <label htmlFor="username">User name:</label>
             <input type="text" id="username" name="username" value={userName}
-            onChange={(e) => setUserName(e.target.value)} />
+            onChange={(e) => setUserName(e.target.value)} required />
             </div>
             <div className="container-user">
             <label htmlFor="firstname">First name:</label>
